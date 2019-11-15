@@ -6,7 +6,7 @@ const initialColor = {
   code: { hex: "" }
 };
 
-const ColorList = ({ colors, updateColors }) => {
+const ColorList = ({ colors, updateColors, getColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -31,6 +31,7 @@ const ColorList = ({ colors, updateColors }) => {
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
+        <button onClick={getColors} >Get Colors</button>
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
