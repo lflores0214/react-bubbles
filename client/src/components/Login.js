@@ -5,11 +5,10 @@ const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
   const [error, setError] = useState();
-
+  const [loggedIn, setLoggedIn]=useState(false)
   const [data, setData] = useState({
     username: "",
     passowrd: "",
-    loggedIn: false
   });
   const handleChange = e => {
     setData({
@@ -28,7 +27,7 @@ const logout =() => {
         console.log(response.data);
         const { data } = response;
         localStorage.setItem("token", data.payload);
-        setData({...data, loggedIn: true})
+        setLoggedIn(true)
       })
       .catch(error => console.log("LOGIN ERROR", error), setError(error));
   };
@@ -37,7 +36,7 @@ const logout =() => {
       <h1>Welcome to the Bubble App!</h1>
       <form onSubmit={login}>
         {error && <div className="error">{error}</div>}
-        <legend>{data.LoggedIn ? "Logged in" : "Please login"}</legend>
+        <legend>{loggedIn ? "Logged in" : "Please login"}</legend>
         <input
           type="text"
           name="username"

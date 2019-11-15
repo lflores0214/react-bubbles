@@ -6,17 +6,43 @@ const initialColor = {
   code: { hex: "" }
 };
 const authAxios = axiosWithAuth();
-const ColorList = ({ history, colors, updateColors, getColors }) => {
+const ColorList = ({ colors, updateColors, getColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [colorToAdd, setColorToAdd] = useState(initialColor);
+
+  const addColor = (color, code, hex) => {
+    const newColor = { color: color, code: { hex: hex } };
+    const authAxios = axiosWithAuth();
+    authAxios
+      .post("/api/colors", newColor)
+      .then(response => {
+        console.log("POST SUCCESS", response.data);
+        getColors()
+      })
+      .catch(error => {
+        console.log("POST FAIL", error);
+      });
+  };
+  const handleChange = e => {
+    setColorToAdd({
+      ...colorToAdd,
+      [e.target.name]: e.target.value
+    });
+  };
+  const handleAdd = e => {
+    e.preventDefault();
+    addColor(colorToAdd.color, colorToAdd.code.hex);
+    setColorToAdd({ color: "", code: { hex: "" } });
+  };
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
   };
 
-  const saveEdit = e => {
+  const saveEdit = () => {
     console.log(colorToEdit);
     // Make a put request to save your updated color
     // think about where will you get the id from...
@@ -24,8 +50,8 @@ const ColorList = ({ history, colors, updateColors, getColors }) => {
     authAxios
       .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
       .then(response => {
-        updateColors(response.data);
-        history.push("/bubbles");
+        console.log("EDIT Success", response);
+        getColors();
       });
   };
 
@@ -35,7 +61,8 @@ const ColorList = ({ history, colors, updateColors, getColors }) => {
     authAxios
       .delete(`/api/colors/${color.id}`, colors.id)
       .then(response => {
-        updateColors({ colors: response.data });
+        console.log("Delete Success", response);
+        getColors();
       })
       .catch(error => console.log("DELETE", error));
   };
@@ -103,6 +130,23 @@ const ColorList = ({ history, colors, updateColors, getColors }) => {
       )}
       <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      <form onSubmit={handleAdd}>
+        <input
+          type="text"
+          name="color"
+          onChange={handleChange}
+          value={colors.color}
+          placeholder="add a color"
+        />
+        <input 
+        type="text"
+        name="hex"
+        onChange={handleChange}
+        value={colors.hex}
+        placeholder="Hex Code"
+        />
+        <button type="submit" >Add Your Color</button>
+      </form>
     </div>
   );
 };

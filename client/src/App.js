@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 import BubblePage from "./components/BubblePage"
@@ -8,7 +8,7 @@ import { PrivateRoute } from "./utils/PrivateRoute"
 
 import Login from "./components/Login";
 import "./styles.scss";
-import ColorList from "./components/ColorList";
+
 
 function App() {
   return (
