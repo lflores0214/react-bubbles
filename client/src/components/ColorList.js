@@ -6,7 +6,7 @@ const initialColor = {
   code: { hex: "" }
 };
 const authAxios = axiosWithAuth();
-const ColorList = ({ colors, updateColors, getColors }) => {
+const ColorList = ({ history, colors, updateColors, getColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
@@ -17,36 +17,45 @@ const ColorList = ({ colors, updateColors, getColors }) => {
   };
 
   const saveEdit = e => {
-    e.preventDefault();
+    console.log(colorToEdit);
     // Make a put request to save your updated color
     // think about where will you get the id from...
     // where is is saved right now?
+    authAxios
+      .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
+      .then(response => {
+        updateColors(response.data);
+        history.push("/bubbles");
+      });
   };
 
   const deleteColor = color => {
     // make a delete request to delete this color
+    console.log(color);
     authAxios
       .delete(`/api/colors/${color.id}`, colors.id)
       .then(response => {
-        updateColors({colors: response.data})
+        updateColors({ colors: response.data });
       })
-      .catch(error => console.log("DELETE", error))
+      .catch(error => console.log("DELETE", error));
   };
 
   return (
     <div className="colors-wrap">
       <p>colors</p>
       <ul>
-        <button onClick={getColors} >Get Colors</button>
+        <button onClick={getColors}>Get Colors</button>
         {colors.map(color => (
           <li key={color.color} onClick={() => editColor(color)}>
             <span>
-              <span className="delete" onClick={e => {
-                    e.stopPropagation();
-                    deleteColor(color)
-                  }
-                }>
-                  x
+              <span
+                className="delete"
+                onClick={e => {
+                  e.stopPropagation();
+                  deleteColor(color);
+                }}
+              >
+                x
               </span>{" "}
               {color.color}
             </span>
@@ -58,7 +67,12 @@ const ColorList = ({ colors, updateColors, getColors }) => {
         ))}
       </ul>
       {editing && (
-        <form onSubmit={saveEdit}>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            saveEdit();
+          }}
+        >
           <legend>edit color</legend>
           <label>
             color name:

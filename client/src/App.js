@@ -8,6 +8,7 @@ import { PrivateRoute } from "./utils/PrivateRoute"
 
 import Login from "./components/Login";
 import "./styles.scss";
+import ColorList from "./components/ColorList";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           Build a PrivateRoute component that will 
           display BubblePage when you're authenticated 
         */}
+        
         <PrivateRoute path="/bubbles">
           <Route render={props => <BubblePage {...props} />} />
         </PrivateRoute>
