@@ -15,25 +15,35 @@ const ColorList = ({ colors, updateColors, getColors }) => {
   const addColor = (color, code, hex) => {
     const newColor = { color: color, code: { hex: hex } };
     const authAxios = axiosWithAuth();
+    console.log("POST", newColor);
     authAxios
       .post("/api/colors", newColor)
       .then(response => {
         console.log("POST SUCCESS", response.data);
-        getColors()
+        getColors();
       })
       .catch(error => {
         console.log("POST FAIL", error);
       });
   };
   const handleChange = e => {
-    setColorToAdd({
-      ...colorToAdd,
-      [e.target.name]: e.target.value
-    });
+    if (e.target.name === "hex") {
+      setColorToAdd({
+        ...colorToAdd,
+        code: {
+          [e.target.name]: e.target.value
+        }
+      });
+    } else {
+      setColorToAdd({
+        ...colorToAdd,
+        [e.target.name]: e.target.value
+      });
+    }
   };
   const handleAdd = e => {
     e.preventDefault();
-    addColor(colorToAdd.color, colorToAdd.code.hex);
+    addColor(colorToAdd.color, colorToAdd.code, colorToAdd.code.hex);
     setColorToAdd({ color: "", code: { hex: "" } });
   };
 
@@ -135,17 +145,17 @@ const ColorList = ({ colors, updateColors, getColors }) => {
           type="text"
           name="color"
           onChange={handleChange}
-          value={colors.color}
+          value={colorToAdd.color}
           placeholder="add a color"
         />
-        <input 
-        type="text"
-        name="hex"
-        onChange={handleChange}
-        value={colors.hex}
-        placeholder="Hex Code"
+        <input
+          type="text"
+          name="hex"
+          onChange={handleChange}
+          value={colorToAdd.code.hex}
+          placeholder="Hex Code"
         />
-        <button type="submit" >Add Your Color</button>
+        <button type="submit">Add Your Color</button>
       </form>
     </div>
   );
